@@ -1,0 +1,50 @@
+import torch
+import torchvision  # Must import this for the model to load without error
+
+# Create models directory if it doesn't exist and download the model
+!mkdir -p models
+!wget -q -O models/nlf_l_multi.torchscript https://bit.ly/nlf_l_pt  # Loads the TorchScript model
+
+# Load the TorchScript model to the GPU and set it to evaluation mode
+model = torch.jit.load('models/nlf_l_multi.torchscript').cuda().eval()
+
+# Import files.upload to upload image
+from google.colab import files
+
+# Upload the image file (user will upload the image interactively)
+uploaded = files.upload()
+
+# Assuming the user uploads 'example_image.jpg', we read it using torchvision
+image_path = 'example_image.jpg'
+
+# Read the image and move it to the GPU
+image = torchvision.io.read_image(image_path).cuda()
+
+# Ensure the image has the correct shape and dimensions
+print(f"Image shape: {image.shape}")  # Should be [C, H, W] for a 3-channel image
+
+# Prepare the image by adding a batch dimension
+frame_batch = image.unsqueeze(0)
+
+# Perform inference using the model
+with torch.inference_mode(), torch.device('cuda'):
+    pred = model.detect_smpl_batched(frame_batch)
+
+# SMPL Parametric predictions
+print("Pose parameters:", pred['pose'])
+print("Shape parameters:", pred['betas'])
+print("Translation parameters:", pred['trans'])
+print("3D Joints:", pred['joints3d'])
+print("3D Vertices:", pred['vertices3d'])
+print("2D Joints:", pred['joints2d'])
+print("2D Vertices:", pred['vertices2d'])
+
+# Nonparametric joints and vertices
+print("Nonparametric 3D Joints:", pred['joints3d_nonparam'])
+print("Nonparametric 3D Vertices:", pred['vertices3d_nonparam'])
+print("Nonparametric 2D Joints:", pred['joints2d_nonparam'])
+print("Nonparametric 2D Vertices:", pred['vertices2d_nonparam'])
+
+# Joint and vertex uncertainties
+print("Joint Uncertainties:", pred['joint_uncertainties'])
+print("Vertex Uncertainties:", pred['vertex_uncertainties'])
