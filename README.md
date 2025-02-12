@@ -1,4 +1,6 @@
 # Neural Localizer Fields for Continuous 3D Human Pose and Shape Estimation
+
+My analyzes and tests of the peer review is upload here:  [Research page](https://github.com/netita/Neural-Localizer-Fields-for-Continuous-3D-Human-Pose-and-Shape-Estimation.git) 
 * [NeurIPS'24 paper](https://arxiv.org/abs/2407.07532) by István Sárándi and Gerard Pons-Moll
 * [Project page](https://istvansarandi.com/nlf)
 * `Neural Localizer Fields for Continuous.pdf` - explanation of the peer review
